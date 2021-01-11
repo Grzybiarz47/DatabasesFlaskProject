@@ -3,7 +3,6 @@ import urllib.parse as up
 import os
 from psycopg2 import Error
 from flask import Flask, render_template, url_for
-from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 ENV = 'dev'
