@@ -5,6 +5,7 @@ from psycopg2 import Error
 from flask import Flask, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
 
+app = Flask(__name__)
 ENV = 'dev'
 
 if ENV == 'dev':
@@ -51,8 +52,6 @@ class DatabaseOperation:
                 print("PostgreSQL connection is closed")
 
 ###################################
-
-app = Flask(__name__)
 
 @app.route('/')
 def index():
