@@ -5,19 +5,12 @@ from psycopg2 import Error
 from flask import Flask, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
 
+ENV = 'dev'
 
-
-# ENV = 'dev'
-
-# if ENV == 'dev':
-#     app.debug = True
-#     app.config['SQLALCHEMY_DATABASE_URI'] = url
-# else:
-#     app.debug = False
-#     app.config['SQLALCHEMY_DATABASE_URI'] = ''
-
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
+if ENV == 'dev':
+    app.debug = True
+else:
+    app.debug = False
 
 ##################################
 #      DATABASE CONNECTION       #
@@ -42,11 +35,6 @@ class DatabaseOperation:
             cursor.execute("SELECT version();")
             record = cursor.fetchone()
             print("You are connected to - ", record, "\n")
-
-            #insert_query = """ INSERT INTO "projekt"."UZYTKOWNIK" (id_user, imie, nazwisko, email, data_dolaczenia) 
-            #                   VALUES (1, 'Jan', 'Zajda', 'j.zajda@onet.pl', '2021-01-11 23:13:16')"""
-            #cursor.execute(insert_query)
-            #connection.commit()
 
             query = """ SELECT * FROM "projekt"."UZYTKOWNIK" """
             cursor.execute(query)
