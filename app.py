@@ -1,8 +1,9 @@
-import psycopg2
-import urllib.parse as up
-import os
-from psycopg2 import Error
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, redirect
+from connection import DatabaseConnection
+
+#
+#   https://jan-zajda-bd1-projekt.herokuapp.com/
+#
 
 app = Flask(__name__)
 ENV = 'dev'
@@ -12,54 +13,28 @@ if ENV == 'dev':
 else:
     app.debug = False
 
-##################################
-#      DATABASE CONNECTION       #
-##################################
-
-up.uses_netloc.append("postgres")
-url = up.urlparse(os.environ["DATABASE_URL"])
-
-class DatabaseOperation:
-
-    def test(self):
-        try:
-            connection = psycopg2.connect(database=url.path[1:],
-                                    user=url.username,
-                                    password=url.password,
-                                    host=url.hostname,
-                                    port=url.port)
-
-            cursor = connection.cursor()
-            print("PostgreSQL server information")
-            print(connection.get_dsn_parameters(), "\n")
-            cursor.execute("SELECT version();")
-            record = cursor.fetchone()
-            print("You are connected to - ", record, "\n")
-
-            query = """ SELECT * FROM "projekt"."UZYTKOWNIK" """
-            cursor.execute(query)
-            record = cursor.fetchall()
-            print("Result ", record)
-            return record
-
-        except (Exception, Error) as error:
-            print("Error while connecting to PostgreSQL", error)
-
-        finally:
-            if (connection):
-                cursor.close()
-                connection.close()
-                print("PostgreSQL connection is closed")
-
-###################################
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    db = DatabaseOperation()
-    return str(db.test())
-    #return render_template('index.html')
+    if request.method == 'POST':
+        db = DatabaseConnection()
+        ans = db.find_movie_series_game('%' + request.form['mainFindForm'].upper() + '%')
+        db.close()
+        return render_template('search_results.html', series=ans[0], movies=ans[1], games=ans[2])
+    else:
+        return render_template('index.html')
+
+@app.route('/series/<int:id>', methods=['GET', 'POST'])
+def series(id):
+    return 'XD'
+
+@app.route('/movie/<int:id>', methods=['GET', 'POST'])
+def movie(id):
+    return 'XD'
+
+@app.route('/game/<int:id>', methods=['GET', 'POST'])
+def game(id):
+    return 'XD'
 
 if __name__ == "__main__":
-
     app.run()
 
