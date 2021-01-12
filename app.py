@@ -40,6 +40,7 @@ class DatabaseOperation:
             cursor.execute(query)
             record = cursor.fetchall()
             print("Result ", record)
+            return record
 
         except (Exception, Error) as error:
             print("Error while connecting to PostgreSQL", error)
@@ -52,12 +53,13 @@ class DatabaseOperation:
 
 ###################################
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    db = DatabaseOperation()
+    return str(db.test())
+    #return render_template('index.html')
 
 if __name__ == "__main__":
-    db = DatabaseOperation()
-    db.test()
+
     app.run()
 
