@@ -169,5 +169,25 @@ class DatabaseFind(Connection):
 
         print(full_query % (id))
         return result
+    
+    def find_roles(self, id):
+        full_query = """
+        (SELECT nazwa, postac, rok_produkcji
+        FROM "projekt"."ARTYSTA" JOIN "projekt"."ARTYSTA_FILM" USING(id_artysta)
+                                 JOIN "projekt"."FILM" as film USING(id_film)
+        WHERE id_artysta = %s
+        UNION
+        SELECT nazwa, postac, rok_produkcji
+        FROM "projekt"."ARTYSTA" JOIN "projekt"."ARTYSTA_SERIAL" USING(id_artysta)
+                                 JOIN "projekt"."SERIAL" as serial USING(id_serial)
+        WHERE id_artysta = %s)
+        ORDER BY rok_produkcji
+        """
+
+        self.cursor.execute(full_query % (id, id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (id, id))
+        return result
 
 ##################################

@@ -107,8 +107,9 @@ def artist(id):
     ans = db.find_info(table="ARTYSTA", id_what="id_artysta", id=id)
     prizes = db.find_prizes(id_what="id_artysta", id=id)
     artist_type = db.find_artist_type(id)
+    roles = db.find_roles(id)
     db.close()
-    return render_template('artist_all.html', artist=ans[0], prizes=prizes, artist_type=artist_type)
+    return render_template('artist_all.html', artist=ans[0], prizes=prizes, artist_type=artist_type, roles=roles)
 
 if __name__ == "__main__":
     app.run()
