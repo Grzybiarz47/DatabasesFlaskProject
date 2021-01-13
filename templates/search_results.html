@@ -2,31 +2,28 @@
 
 {% block body %}
     <h1>Znalezione rezultaty</h1>
-    <div class="content">
-        <table class="res_table" id="movies">
-            <thead><tr><th>Seriale</th></tr></thead>
-            <tbody>
-                {% for obj in series %}
-                    <tr><td><a href="/series/{{obj.id_serial}}">{{obj.nazwa}}</a></td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <table class="res_table" id="series">
-            <thead><tr><th>Filmy</th></tr></thead>
-            <tbody>
-                {% for movie in movies %}
-                    <tr><td><a href="/movie/{{movie.id_film}}">{{movie.nazwa}}</a></td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <table class="res_table" id="games">
-            <thead><tr><th>Gry</th></tr></thead>
-            <tbody>
-                {% for game in games %}
-                    <tr><td><a href="/game/{{game.id_gra}}">{{game.nazwa}}</a></td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
+    <table class="res_table" id="movies">
+        <thead><tr><th>Seriale</th></tr></thead>
+        <tbody>
+            {% for obj in series %}
+                <tr><td><a href="/series/{{obj.id_serial}}">{{obj.nazwa}}</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="res_table" id="series">
+        <thead><tr><th>Filmy</th></tr></thead>
+        <tbody>
+            {% for movie in movies %}
+                <tr><td><a href="/movie/{{movie.id_film}}">{{movie.nazwa}}</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="res_table" id="games">
+        <thead><tr><th>Gry</th></tr></thead>
+        <tbody>
+            {% for game in games %}
+                <tr><td><a href="/game/{{game.id_gra}}">{{game.nazwa}}</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

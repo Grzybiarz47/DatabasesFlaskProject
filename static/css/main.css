@@ -1,13 +1,42 @@
+/*main*/
 body{
     background-color: coral;
 }
+h1, h2, h3{
+    margin-left: 10px;
+}
+/*tables*/
 table, td, th{
-    width: 30%;
     background-color: white;
+    border: 1px solid black;
+    text-align: center;
+    padding: 5px;
+}
+table{
+    width: 70%;
+    border-collapse: collapse;
+    margin: auto;
+}
+table.res_table{
+    width: 30%;
     margin-right: 5px;
     margin-left: 5px;
-    text-align: center;
-}
-.res_table{
     float: left;
+}
+fieldset{
+    background-color: white;
+}
+/*div*/
+div.description{
+    width: 50%;
+    float: left;
+}
+div.content{
+    width: 50%;
+    float: right;
+}
+/*input*/
+button{
+    margin: 5px;
+    padding: 5px;
 }

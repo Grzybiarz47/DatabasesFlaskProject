@@ -1,0 +1,46 @@
+{% extends 'index.html' %}
+
+{% block description %}
+    <h2>Imię: {{artist.imie}}</h2>
+    <h2>Nazwisko: {{artist.nazwisko}}</h2>
+    <h2>Data urodzenia: {{artist.data_urodzenia}}</h2>
+    {% if artist.data_smierci != None %}
+        <h2>Data śmierci: {{artist.data_smierci}}</h2>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <table>
+    {% if artist_type %}
+        <thead>
+        <tr><th>Typ artysty</th></tr>
+        </thead>
+        <tbody>
+        {% for types in artist_type %}
+            <tr><td>{{types.typ}}</td></tr>
+        {% endfor %}
+        </tbody>
+    {% endif %}
+    </table>
+    <p></p>
+    <table>
+    {% if prizes %}
+        <thead>
+        <tr><th colspan="3">Nagroda</th></tr>
+        <tr>
+            <td>Lp</td>
+            <td>Nazwa</td>
+            <td>Rok przyznania</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for prize in prizes %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{prize.nazwa}}</td>
+                <td>{{prize.rok_przyznania}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>            
+    {% endif %}
+    </table>
+{% endblock %}

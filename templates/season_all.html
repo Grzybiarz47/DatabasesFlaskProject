@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+
+{% block description %}
+    <h1>Sezon serialu: {{season.nazwa}}</h1>
+    <h3>Rok produkcji: {{season.rok_produkcji}}</h3>
+{% endblock %}
+{% block content %}
+    <table>
+    {% if chapters %}
+        <thead>
+        <tr><th colspan="2">Odcinki</th></tr>
+        <tr>
+            <td>Lp</td>
+            <td>Odcinek</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for chapter in chapters %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{chapter.nazwa}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% endif %}
+    </table>
+{% endblock %}

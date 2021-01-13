@@ -11,7 +11,7 @@ from psycopg2 import Error
 up.uses_netloc.append("postgres")
 url = up.urlparse(os.environ["DATABASE_URL"])
 
-class DatabaseConnection:
+class Connection:
 
     def __init__(self):
         try:
@@ -34,6 +34,16 @@ class DatabaseConnection:
         for row in result:
             ans.append(dict(row))
         return ans
+
+    def close(self):
+        if (self.connection):
+            self.cursor.close()
+            self.connection.close()
+            print("PostgreSQL connection closed")
+
+##################################
+
+class DatabaseFind(Connection):
 
     def find_movie_series_game(self, query):
         full_query_series = """
@@ -68,10 +78,96 @@ class DatabaseConnection:
         print(full_query_game % (query))
         return result
 
-    def close(self):
-        if (self.connection):
-            self.cursor.close()
-            self.connection.close()
-            print("PostgreSQL connection closed")
+    def find_info(self, table, id_what, id):
+        full_query = """
+        SELECT * 
+        FROM "projekt"."%s"
+        WHERE %s = %s
+        """
 
-###################################
+        self.cursor.execute(full_query % (table, id_what, id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (table, id_what, id))
+        return result
+
+    def find_cast(self, table, id_what, id):
+        full_query = """
+        SELECT id_artysta, imie, nazwisko, rola, postac
+        FROM "projekt"."%s" JOIN "projekt"."ARTYSTA_%s" USING (%s)
+                            JOIN "projekt"."ARTYSTA" USING(id_artysta)
+        WHERE %s = %s
+        """
+
+        self.cursor.execute(full_query % (table, table, id_what, id_what, id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (table, table, id_what, id_what, id))
+        return result
+    
+    def find_seasons(self, id):
+        full_query = """
+        SELECT * 
+        FROM "projekt"."SEZON" 
+        WHERE id_serial = %s
+        """
+        
+        self.cursor.execute(full_query % (id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (id))
+        return result
+    
+    def find_season_info(self, id_serial, id_sezon):
+        full_query = """
+        SELECT nazwa, sezon.rok_produkcji
+        FROM "projekt"."SEZON" as sezon JOIN "projekt"."SERIAL" USING(id_serial) 
+        WHERE id_serial = %s and id_sezon = %s
+        """
+
+        self.cursor.execute(full_query % (id_serial, id_sezon))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (id_serial, id_sezon))
+        return result
+
+    def find_chapters(self, id):
+        full_query = """
+        SELECT nazwa 
+        FROM "projekt"."ODCINEK" 
+        WHERE id_sezon = %s
+        """
+
+        self.cursor.execute(full_query % (id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (id))
+        return result
+    
+    def find_prizes(self, id_what, id):
+        full_query = """
+        SELECT nazwa, rok_przyznania
+        FROM "projekt"."NAGRODA"
+        WHERE %s = %s 
+        """
+
+        self.cursor.execute(full_query % (id_what, id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (id_what, id))
+        return result
+    
+    def find_artist_type(self, id):
+        full_query = """
+        SELECT typ
+        FROM "projekt"."RODZAJ_ARTYSTY"
+        WHERE id_artysta = %s
+        """
+        
+        self.cursor.execute(full_query % (id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (id))
+        return result
+
+##################################
