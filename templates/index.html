@@ -1,12 +1,23 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="search">
-    <h1>Wyszukaj film, serial lub grę</h1>
+    <header>
+        <div class="search">
+            <h1>Wyszukaj film, serial lub grę</h1>
 
-    <form action="/" method="POST">
-        <input type="text" id="mainFindForm" name="mainFindForm">
-        <input type="submit" value="Szukaj">
-    </form>
-</div>
+            <form action="/" method="POST">
+                <input type="search" id="mainFindForm" name="mainFindForm">
+                <input type="submit" value="Szukaj">
+            </form>
+        </div>
+        <div class="login">
+            {% if 'user' in session %}
+                <button name="logout" id="logout_user" onclick="toLogout()">Wyloguj</button>
+                <button name="account" id="account_user" onclick="toAccount()">Twoje konto</button>
+            {% else %}
+                <button name="login" id="login_user" onclick="toLogin()">Logowanie</button>
+                <button name="register" id="register_user" onclick="toRegister()">Rejestracja</button>
+            {% endif %}
+        </div>
+    </header>
 {% endblock %}

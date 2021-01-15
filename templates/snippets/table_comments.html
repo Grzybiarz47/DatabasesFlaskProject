@@ -1,0 +1,11 @@
+{% if observed and comments %}
+    {% for person, comment in supervised, comments %}
+        <legend>{{person.imie + " " + person.nazwisko}}</legend>
+        <fieldset>{{comment.recenzja}}</fieldset>
+    {% endfor %}
+    <form action="/action_page.php" method="POST">
+        <label for="myComment">Dodaj komentarz</label>
+        <textarea id="myComment" name="myComment" rows="4" cols="50"></textarea>
+        <input type="submit" value="Opublikuj">
+    </form>
+{% endif %}

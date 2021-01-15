@@ -2,8 +2,29 @@
 body{
     background-color: coral;
 }
+header{
+    border: 2px solid maroon;
+    height: 120px;
+}
 h1, h2, h3{
     margin-left: 10px;
+}
+/*div*/
+div.search, div.reglog{
+    float: left;
+} 
+div.login{
+    float: right;
+}
+div.description{
+    width: 50%;
+    clear: left;
+    float: left;
+}
+div.content{
+    width: 50%;
+    clear: right;
+    float: right;
 }
 /*tables*/
 table, td, th{
@@ -16,6 +37,7 @@ table{
     width: 70%;
     border-collapse: collapse;
     margin: auto;
+    margin-top: 10px;
 }
 table.res_table{
     width: 30%;
@@ -23,20 +45,21 @@ table.res_table{
     margin-left: 5px;
     float: left;
 }
+/*fieldset*/
 fieldset{
     background-color: white;
+    margin-left: 10px;
 }
-/*div*/
-div.description{
-    width: 50%;
-    float: left;
-}
-div.content{
-    width: 50%;
-    float: right;
+legend{
+    background-color: darkgray;
+    border: 1px solid black;
+    padding: 3px;
 }
 /*input*/
 button{
-    margin: 5px;
+    margin: 10px;
     padding: 5px;
+}
+input[type=text], [type=email], [type=password], [type=search]{
+    margin: 10px;
 }

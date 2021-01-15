@@ -16,47 +16,13 @@
     <form action="/movie/{{movie.id_film}}" method="POST">
         <button name="submit" id="movie_cast" value="cast">Obsada</button>
         <button name="submit" id="movie_prize" value="prize">Nagrody</button>
-        <button name="submit" id="movie_comments" value="comments">Komentarze</button>
+        {% if 'user' in session %}
+            <button name="submit" id="movie_comments" value="comments">Komentarze</button>
+        {% endif %}
     </form>
 {% endblock %}
 {% block content %}
-    <table>
-    {% if cast %}
-        <thead>
-        <tr><th colspan="3">Obsada</th></tr>
-        <tr>
-            <td>Imię i nazwisko</td>
-            <td>Rola</td>
-            <td>Postać</td>
-        </tr>
-        </thead>
-        <tbody>
-        {% for person in cast %}
-            <tr>
-                <td><a href="/artist/{{person.id_artysta}}">{{person.imie + " " + person.nazwisko}}</a></td>
-                <td>{{person.rola}}</td>
-                <td>{{person.postac}}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    {% elif prizes %}
-        <thead>
-            <tr><th colspan="3">Nagroda</th></tr>
-            <tr>
-                <td>Lp</td>
-                <td>Nazwa</td>
-                <td>Rok przyznania</td>
-            </tr>
-        </thead>
-        <tbody>
-        {% for prize in prizes %}
-            <tr>
-                <td>{{loop.index}}</td>
-                <td>{{prize.nazwa}}</td>
-                <td>{{prize.rok_przyznania}}</td>
-            </tr>
-        {% endfor %}
-        </tbody>   
-    {% endif %}
-    </table>
+    {% include "snippets/table_cast.html" %}
+    {% include "snippets/table_prizes.html" %}
+    {% include "snippets/table_comments.html" %}
 {% endblock %}

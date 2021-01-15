@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block description %}
+    <h2>Login: {{user_data.login}}</h2>
+    <h2>Email: {{user_data.email}}</h2>
+    <h2>Data dołączenia: {{user_data.data_dolaczenia}}</h2>
+    <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>
+    <p>Wyszukaj użytkownika</p>
+    <form action="/account" method="POST">
+        <input type="search" id="mainFindUserForm" name="mainFindUserForm">
+        <input type="submit" value="Szukaj">
+    </form>
+    {% if searched_users %}
+        <form action="/account" method="POST">
+            <table>
+                <tbody>
+                {% for user in searched_users %}
+                    <tr>
+                        <td>{{user.login}}</td>
+                        {% if user not in observed %}
+                            <td><button name="add" value="{{user.id_user}}">Dodaj do obserwowanych</button></td>
+                        {% else %}
+                            <td><button name="delete" value="{{user.id_user}}">Usuń z obserwowanych</button></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    {% if observed %}
+        <table>
+            <thead>
+                <tr><th colspan="1">Obserwowani</th></tr>
+                <tr>
+                    <th>Login</th>
+                    <!-- <td>Średnia ocena</td>
+                    <td>Liczba komentarzy</td> -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for watched in observed %}
+                <tr>
+                    <td>{{watched.login}}</td>
+                    <!-- <td>{{watched.avg}}</td>
+                    <td>{{watched.comments}}</td> -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

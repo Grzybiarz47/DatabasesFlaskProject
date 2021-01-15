@@ -22,26 +22,7 @@
     {% endif %}
     </table>
     <p></p>
-    <table>
-    {% if prizes %}
-        <thead>
-        <tr><th colspan="2">Nagroda</th></tr>
-        <tr>
-            <td>Nazwa</td>
-            <td>Rok przyznania</td>
-        </tr>
-        </thead>
-        <tbody>
-        {% for prize in prizes %}
-            <tr>
-                <td>{{prize.nazwa}}</td>
-                <td>{{prize.rok_przyznania}}</td>
-            </tr>
-        {% endfor %}
-        </tbody>            
-    {% endif %}
-    </table>
-    <p></p>
+    {% include "snippets/table_prizes.html" %}
     <table>
     {% if roles %}
         <thead>

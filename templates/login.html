@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="reglog">
+        <h1>Logowanie</h1>
+
+        <form action="/login" method="POST">
+            <fieldset>
+                <legend>Wprowadź dane</legend>
+                <label for="email">E-mail</label><br>
+                <input type="email" name="email" id="email"><br>
+                <label for="email">Hasło</label><br>
+                <input type="password" name="pass" id="pass"><br>
+                <input type="submit" value="Zaloguj">
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}
+{% block description %}
+    {% if message %}
+        <h2>{{message}}</h2>
+        <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>            
+    {% endif %}
+{% endblock %}

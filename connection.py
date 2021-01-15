@@ -3,6 +3,7 @@ import psycopg2.extras
 import urllib.parse as up
 import os
 from psycopg2 import Error
+from datetime import datetime
 
 ##################################
 #      DATABASE CONNECTION       #
@@ -36,14 +37,15 @@ class Connection:
         return ans
 
     def close(self):
+        return self.__del__()
+
+    def __del__(self):
         if (self.connection):
             self.cursor.close()
             self.connection.close()
             print("PostgreSQL connection closed")
 
 ##################################
-
-class DatabaseFind(Connection):
 
     def find_movie_series_game(self, query):
         full_query_series = """
@@ -97,6 +99,7 @@ class DatabaseFind(Connection):
         FROM "projekt"."%s" JOIN "projekt"."ARTYSTA_%s" USING (%s)
                             JOIN "projekt"."ARTYSTA" USING(id_artysta)
         WHERE %s = %s
+        ORDER BY rola
         """
 
         self.cursor.execute(full_query % (table, table, id_what, id_what, id))
@@ -189,5 +192,181 @@ class DatabaseFind(Connection):
 
         print(full_query % (id, id))
         return result
+    
+    def find_account(self, user):
+        full_query = """
+        SELECT login, email, data_dolaczenia
+        FROM "projekt"."UZYTKOWNIK"
+        WHERE email = '%s'
+        """
+
+        self.cursor.execute(full_query % (user))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (user))
+        return result
+    
+    def find_users(self, name, user):
+        full_query = """
+        SELECT id_user, login
+        FROM "projekt"."UZYTKOWNIK"
+        WHERE email != '%s' and login LIKE '%s'
+        """
+
+        self.cursor.execute(full_query % (user, name))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (user, name))
+        return result
+
+    def find_id_user(self, email):
+        full_query = """
+        SELECT id_user 
+        FROM "projekt"."UZYTKOWNIK" 
+        WHERE email = '%s'
+        """
+
+        self.cursor.execute(full_query % (email))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (email))
+        return result[0]['id_user']
+    
+    def find_observed(self, email):
+        full_query = """
+        SELECT * FROM "projekt"."observed%s" 
+        """
+
+        self.cursor.execute(full_query % (email))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (email))
+        return result
 
 ##################################
+
+    def valid_email_login(self, email, login):
+        full_query = """
+        SELECT COUNT(*)
+        FROM "projekt"."UZYTKOWNIK"
+        WHERE email = '%s' or login = '%s'
+        """
+
+        self.cursor.execute(full_query % (email, login))
+        result = self.make_dict(self.cursor.fetchall())
+
+        if result[0]['count'] != 0:
+            result = False
+        else:
+            result = True
+
+        print(full_query % (email, login))
+        return result
+
+    def register_user(self, data):
+        full_query = """
+        INSERT INTO "projekt"."UZYTKOWNIK" VALUES
+        ((SELECT projekt.next_id('UZYTKOWNIK', 'id_user')), '%s', '%s', '%s', '%s') 
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['email'], data['date'], data['pass'], data['login']))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while adding new record to database", error)
+            return False
+
+        print(full_query % (data['email'], data['date'], data['pass'], data['login']))
+        return True
+
+    def login_user(self, data):
+        full_query = """
+        SELECT COUNT(*)
+        FROM "projekt"."UZYTKOWNIK"
+        WHERE email = '%s' and haslo = '%s'
+        """
+
+        self.cursor.execute(full_query % (data['email'], data['pass']))
+        result = self.make_dict(self.cursor.fetchall())
+
+        if result[0]['count'] != 0:
+            result = True
+        else:
+            result = False
+
+        print(full_query % (data['email'], data['pass']))
+        return result
+    
+##################################
+
+    def add(self, data):
+        full_query = """
+        INSERT INTO "projekt"."OBSERWOWANY" VALUES
+        ((SELECT id_user FROM "projekt"."UZYTKOWNIK" WHERE email = '%s'), %s, '%s')
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['user'], data['id'], data['date']))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while adding new record to database", error)
+
+        print(full_query % (data['user'], data['id'], data['date']))
+        self.create_observed_view(data['user'])
+    
+    def delete(self, data):
+        full_query = """
+        DELETE FROM "projekt"."OBSERWOWANY" WHERE id_obserwowany = %s and id_user = %s
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['id'], data['id_user']))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while adding new record to database", error)
+
+        print(full_query % (data['id'], data['id_user']))
+        self.create_observed_view(data['user'])
+
+
+    def create_observed_view(self, user):
+        full_query = """
+        CREATE OR REPLACE VIEW "projekt"."observed%s" AS
+        SELECT id_user, login
+        FROM "projekt"."UZYTKOWNIK" JOIN (
+        SELECT id_obserwowany 
+        FROM "projekt"."UZYTKOWNIK" JOIN "projekt"."OBSERWOWANY" USING(id_user)
+        WHERE email = '%s') as p 
+        ON p.id_obserwowany = id_user
+        """
+
+        try:
+            self.cursor.execute(full_query % (user, user))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while creating view", error)
+
+        print(full_query % (user, user))
+    
+    def drop_observed_view(self, user):
+        full_query = """
+        DROP VIEW IF EXISTS "projekt"."observed%s"
+        """
+
+        try:
+            self.cursor.execute(full_query % (user))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while creating view", error)
+
+        print(full_query % (user))
+    
+
+
+
+

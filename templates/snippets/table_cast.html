@@ -1,0 +1,21 @@
+{% if cast %}
+    <table>
+        <thead>
+        <tr><th colspan="3">Obsada</th></tr>
+        <tr>
+            <th>Imię i nazwisko</th>
+            <th>Rola</th>
+            <th>Postać</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for person in cast %}
+            <tr>
+                <td><a href="/artist/{{person.id_artysta}}">{{person.imie + " " + person.nazwisko}}</a></td>
+                <td>{{person.rola}}</td>
+                <td>{{person.postac}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
