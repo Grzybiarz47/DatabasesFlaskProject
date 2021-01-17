@@ -82,7 +82,7 @@ class Connection:
 
     def find_info(self, table, id_what, id):
         full_query = """
-        SELECT * 
+        SELECT *
         FROM "projekt"."%s"
         WHERE %s = %s
         """
@@ -91,7 +91,38 @@ class Connection:
         result = self.make_dict(self.cursor.fetchall())
 
         print(full_query % (table, id_what, id))
-        return result
+        return result[0]
+
+    def find_grade(self, table, id_what, id):
+        full_query = """
+        SELECT CAST(AVG(ocena) AS DECIMAL(7,4))as ocena
+        FROM "projekt"."UZYTKOWNIK_%s"
+        WHERE %s = %s
+        """
+
+        self.cursor.execute(full_query % (table, id_what, id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        if result[0]['ocena'] == None:
+            result[0]['ocena'] = 'Brak ocen'
+
+        print(full_query % (table, id_what, id))
+        return result[0]
+    
+    def find_user_grade(self, table, id_what, id, id_user):
+        full_query = """
+        SELECT %s_opinia, ocena
+        FROM "projekt"."UZYTKOWNIK_%s" JOIN "projekt"."UZYTKOWNIK" USING(id_user)
+        WHERE id_user = %s and %s = %s
+        """
+
+        self.cursor.execute(full_query % (id_what, table, id_user, id_what, id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (id_what, table, id_user, id_what, id))
+        if result == []:
+            result = [{'ocena': 'Brak oceny'}]
+        return result[0]
 
     def find_cast(self, table, id_what, id):
         full_query = """
@@ -132,7 +163,7 @@ class Connection:
         result = self.make_dict(self.cursor.fetchall())
 
         print(full_query % (id_serial, id_sezon))
-        return result
+        return result[0]
 
     def find_chapters(self, id):
         full_query = """
@@ -204,7 +235,7 @@ class Connection:
         result = self.make_dict(self.cursor.fetchall())
 
         print(full_query % (user))
-        return result
+        return result[0]
     
     def find_users(self, name, user):
         full_query = """
@@ -241,6 +272,21 @@ class Connection:
         result = self.make_dict(self.cursor.fetchall())
 
         print(full_query % (email))
+        return result
+    
+    def find_comments(self, table, email, id_what, id):
+        full_query = """
+        SELECT id_komentarz, recenzja, login
+        FROM "projekt"."observed%s" JOIN "projekt"."UZYTKOWNIK_%s" USING(id_user)
+                                    JOIN "projekt"."KOMENTARZ" USING(%s_opinia)
+        WHERE %s = %s
+        ORDER BY id_komentarz DESC
+        """
+
+        self.cursor.execute(full_query % (email, table, id_what, id_what, id))
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query % (email, table, id_what, id_what, id))
         return result
 
 ##################################
@@ -316,6 +362,52 @@ class Connection:
         print(full_query % (data['user'], data['id'], data['date']))
         self.create_observed_view(data['user'])
     
+    def add_grade(self, data):
+        full_query = """
+        INSERT INTO "projekt"."UZYTKOWNIK_%s" VALUES
+        (projekt.next_id('UZYTKOWNIK_%s', '%s_opinia'), %s, %s, %s, '%s')
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['table'], data['table'], data['id_what'], data['id_user'], data['id'], data['grade'], data['date']))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while adding new record to database", error)
+
+        print(full_query % (data['table'], data['table'], data['id_what'], data['id_user'], data['id'], data['grade'], data['date']))
+
+    def add_comment(self, data):
+        full_query = """
+        INSERT INTO "projekt"."KOMENTARZ" (id_komentarz, %s_opinia, recenzja) VALUES
+        (projekt.next_id('KOMENTARZ', 'id_komentarz'), %s, '%s')
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['id_what'], data['id'], data['com']))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+
+        print(full_query % (data['id_what'], data['id'], data['com']))
+
+    def update_grade(self, data):
+        full_query = """
+        UPDATE "projekt"."UZYTKOWNIK_%s" 
+        SET ocena = %s, data_oceny = '%s'
+        WHERE id_user = %s and %s = %s 
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['table'], data['grade'], data['date'], data['id_user'], data['id_what'], data['id']))
+            self.connection.commit()
+        
+        except (Exception, Error) as error:
+            print("Error while updating record in database", error)
+
+        print(full_query % (data['table'], data['grade'], data['date'], data['id_user'], data['id_what'], data['id']))
+
     def delete(self, data):
         full_query = """
         DELETE FROM "projekt"."OBSERWOWANY" WHERE id_obserwowany = %s and id_user = %s
@@ -341,16 +433,20 @@ class Connection:
         FROM "projekt"."UZYTKOWNIK" JOIN "projekt"."OBSERWOWANY" USING(id_user)
         WHERE email = '%s') as p 
         ON p.id_obserwowany = id_user
+        UNION
+        SELECT id_user, login
+        FROM "projekt"."UZYTKOWNIK"
+        WHERE email = '%s'
         """
 
         try:
-            self.cursor.execute(full_query % (user, user))
+            self.cursor.execute(full_query % (user, user, user))
             self.connection.commit()
         
         except (Exception, Error) as error:
             print("Error while creating view", error)
 
-        print(full_query % (user, user))
+        print(full_query % (user, user, user))
     
     def drop_observed_view(self, user):
         full_query = """

@@ -19,8 +19,8 @@
     </div>
 {% endblock %}
 {% block description %}
+    <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>   
     {% if message %}
-        <h2>{{message}}</h2>
-        <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>            
+        <h2>{{message}}</h2> 
     {% endif %}
 {% endblock %}

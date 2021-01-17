@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block body %}
+{% block header %}
     <header>
         <div class="search">
             <h1>Wyszukaj film, serial lub grę</h1>
@@ -11,6 +11,7 @@
             </form>
         </div>
         <div class="login">
+            <button name="logout" id="main_page" onclick="toMainMenu()">Strona główna</button>
             {% if 'user' in session %}
                 <button name="logout" id="logout_user" onclick="toLogout()">Wyloguj</button>
                 <button name="account" id="account_user" onclick="toAccount()">Twoje konto</button>

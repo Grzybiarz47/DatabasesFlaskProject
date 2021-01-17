@@ -5,6 +5,10 @@
     <h3>Rok produkcji: {{movie.rok_produkcji}}</h3>
     <h3>Studio: {{movie.studio}}</h3>
     <h3>Box-office: {{movie.box_office + "$"}}</h3>
+    <h3>Ocena użytkowników: {{grade.ocena}}</h3>
+    {% if 'user' in session %}
+        <h3>Twoja ocena: {{grade.ocena_uzytkownika}}</h3>
+    {% endif %}
     <fieldset>
     {% if movie.opis %}
         {{movie.opis}}
@@ -12,17 +16,49 @@
         Brak opisu
     {% endif %}
     </fieldset>
-
     <form action="/movie/{{movie.id_film}}" method="POST">
         <button name="submit" id="movie_cast" value="cast">Obsada</button>
         <button name="submit" id="movie_prize" value="prize">Nagrody</button>
         {% if 'user' in session %}
-            <button name="submit" id="movie_comments" value="comments">Komentarze</button>
+            <label for="select_grade">Wybierz ocenę:</label>
+            <select name="select_grade" id="select_grade">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            <button name="submit" id="add_grade" value="add_grade">Dodaj ocenę</button>
+            <button name="submit" id="movie_comments" value="comments">Zobacz komentarze</button>
         {% endif %}
     </form>
 {% endblock %}
 {% block content %}
     {% include "snippets/table_cast.html" %}
     {% include "snippets/table_prizes.html" %}
-    {% include "snippets/table_comments.html" %}
+    {% if comments or comments == [] %}
+        {% for comment in comments %}
+            <fieldset class="comment">
+                <legend>{{comment.login}}</legend>
+                {{comment.recenzja}}
+            </fieldset>
+        {% endfor %}
+        {% if 'user' in session %}
+            {% if grade.ocena_uzytkownika != 'Brak oceny' %}
+                <form action="/movie/{{movie.id_film}}" method="POST">    
+                    <textarea name="comments_area" id="comments_area" rows="3" cols="50" maxlength ="100"></textarea><br>
+                    <button name="submit" id="add_comment" value="add_comment">Opublikuj komentarz</button>
+                </form>
+            {% else %}
+                <h2>Najpierw oceń film, aby skomentować</h2>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <h2>{{message}}</h2>
+    {% endif %}
 {% endblock %}
