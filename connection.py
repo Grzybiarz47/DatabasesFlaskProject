@@ -36,9 +36,6 @@ class Connection:
             ans.append(dict(row))
         return ans
 
-    def close(self):
-        return self.__del__()
-
     def __del__(self):
         if (self.connection):
             self.cursor.close()
@@ -206,12 +203,12 @@ class Connection:
     
     def find_roles(self, id):
         full_query = """
-        (SELECT nazwa, postac, rok_produkcji
+        (SELECT nazwa, rola, postac, rok_produkcji
         FROM "projekt"."ARTYSTA" JOIN "projekt"."ARTYSTA_FILM" USING(id_artysta)
                                  JOIN "projekt"."FILM" as film USING(id_film)
         WHERE id_artysta = %s
         UNION
-        SELECT nazwa, postac, rok_produkcji
+        SELECT nazwa, rola, postac, rok_produkcji
         FROM "projekt"."ARTYSTA" JOIN "projekt"."ARTYSTA_SERIAL" USING(id_artysta)
                                  JOIN "projekt"."SERIAL" as serial USING(id_serial)
         WHERE id_artysta = %s)
@@ -265,7 +262,7 @@ class Connection:
     
     def find_observed(self, email):
         full_query = """
-        SELECT * FROM "projekt"."observed%s" 
+        SELECT * FROM "projekt"."obserwowani_przez_%s" 
         """
 
         self.cursor.execute(full_query % (email))
@@ -277,7 +274,7 @@ class Connection:
     def find_comments(self, table, email, id_what, id):
         full_query = """
         SELECT id_komentarz, recenzja, login
-        FROM "projekt"."observed%s" JOIN "projekt"."UZYTKOWNIK_%s" USING(id_user)
+        FROM "projekt"."obserwowani_przez_%s" JOIN "projekt"."UZYTKOWNIK_%s" USING(id_user)
                                     JOIN "projekt"."KOMENTARZ" USING(%s_opinia)
         WHERE %s = %s
         ORDER BY id_komentarz DESC
@@ -289,41 +286,70 @@ class Connection:
         print(full_query % (email, table, id_what, id_what, id))
         return result
 
-##################################
-
-    def valid_email_login(self, email, login):
+    def find_overall_stats(self):
         full_query = """
-        SELECT COUNT(*)
-        FROM "projekt"."UZYTKOWNIK"
-        WHERE email = '%s' or login = '%s'
+        SELECT * FROM "projekt"."statystyki_ogólne"
         """
 
-        self.cursor.execute(full_query % (email, login))
+        self.cursor.execute(full_query)
         result = self.make_dict(self.cursor.fetchall())
 
-        if result[0]['count'] != 0:
-            result = False
-        else:
-            result = True
+        print(full_query)
+        return result[0]
+    
+    def find_type_artist_stats(self):
+        full_query = """
+        SELECT * FROM "projekt"."statystyki_typy_artystów"
+        """
 
-        print(full_query % (email, login))
-        return result
+        self.cursor.execute(full_query)
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query)
+        return result  
+    
+    def find_best_stats(self):
+        full_query = """
+        SELECT * FROM "projekt"."statystyki_najwyższe_oceny"
+        """
+        
+        self.cursor.execute(full_query)
+        result = self.make_dict(self.cursor.fetchall())
+
+        print(full_query)
+        return result  
+
+##################################
 
     def register_user(self, data):
         full_query = """
         INSERT INTO "projekt"."UZYTKOWNIK" VALUES
         ((SELECT projekt.next_id('UZYTKOWNIK', 'id_user')), '%s', '%s', '%s', '%s') 
         """
+        check_query = """
+        SELECT COUNT(*) FROM "projekt"."UZYTKOWNIK" 
+        """
 
         try:
+            self.cursor.execute(check_query)
+            result1 = self.make_dict(self.cursor.fetchall())
+            print(check_query)
+
             self.cursor.execute(full_query % (data['email'], data['date'], data['pass'], data['login']))
             self.connection.commit()
-        
+            print(full_query % (data['email'], data['date'], data['pass'], data['login']))
+
+            self.cursor.execute(check_query)
+            result2 = self.make_dict(self.cursor.fetchall())
+            print(check_query)
+
+            if result1[0]['count'] == result2[0]['count']:
+                return False
+
         except (Exception, Error) as error:
             print("Error while adding new record to database", error)
             return False
 
-        print(full_query % (data['email'], data['date'], data['pass'], data['login']))
         return True
 
     def login_user(self, data):
@@ -426,7 +452,7 @@ class Connection:
 
     def create_observed_view(self, user):
         full_query = """
-        CREATE OR REPLACE VIEW "projekt"."observed%s" AS
+        CREATE OR REPLACE VIEW "projekt"."obserwowani_przez_%s" AS
         SELECT id_user, login
         FROM "projekt"."UZYTKOWNIK" JOIN (
         SELECT id_obserwowany 
@@ -450,7 +476,7 @@ class Connection:
     
     def drop_observed_view(self, user):
         full_query = """
-        DROP VIEW IF EXISTS "projekt"."observed%s"
+        DROP VIEW IF EXISTS "projekt"."obserwowani_przez_%s"
         """
 
         try:

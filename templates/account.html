@@ -4,8 +4,7 @@
     <h2>Login: {{user_data.login}}</h2>
     <h2>Email: {{user_data.email}}</h2>
     <h2>Data dołączenia: {{user_data.data_dolaczenia}}</h2>
-    <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>
-    <p>Wyszukaj użytkownika</p>
+    <h3>Wyszukaj użytkownika</h3>
     <form action="/account" method="POST">
         <input type="search" id="mainFindUserForm" name="mainFindUserForm">
         <input type="submit" value="Szukaj">
@@ -28,6 +27,7 @@
             </table>
         </form>
     {% endif %}
+    <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>
 {% endblock %}
 {% block content %}
     {% if observed %}
@@ -36,16 +36,12 @@
                 <tr><th colspan="1">Obserwowani</th></tr>
                 <tr>
                     <th>Login</th>
-                    <!-- <td>Średnia ocena</td>
-                    <td>Liczba komentarzy</td> -->
                 </tr>
             </thead>
             <tbody>
                 {% for watched in observed %}
                 <tr>
                     <td>{{watched.login}}</td>
-                    <!-- <td>{{watched.avg}}</td>
-                    <td>{{watched.comments}}</td> -->
                 </tr>
                 {% endfor %}
             </tbody>

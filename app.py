@@ -33,6 +33,9 @@ def index():
     else:
         return render_template('index.html')
 
+##################################
+#    ARTIST GAME SERIES MOVIE    #
+##################################
 @app.route('/series/<int:id>', methods=['GET', 'POST'])
 def series(id):
     db = Connection()
@@ -154,6 +157,9 @@ def artist(id):
     roles = db.find_roles(id)
     return render_template('artist_all.html', artist=ans, prizes=prizes, artist_type=artist_type, roles=roles)
 
+##################################
+#      LOGINOUT & REGISTER       #
+##################################
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if 'user' in session:
@@ -166,13 +172,10 @@ def register():
         email = request.form['email']
         password = request.form['pass']
         if log and email and password: 
-            if db.valid_email_login(email, log):
-                if db.register_user({'login': log, 'email': email, 'pass': password, 'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')}):
-                    message='Rejestracja się powiodła - teraz możesz się zalogować'
-                else:
-                    message='Błąd przy łączeniu z bazą danych'
+            if db.register_user({'login': log, 'email': email, 'pass': password, 'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')}):
+                message='Rejestracja się powiodła - teraz możesz się zalogować'
             else:
-                message='Wystąpił błąd - email lub login znajduje się już w bazie'
+                message='Email lub login znajduje się już w bazie lub wystąpił błąd przy łączeniu z bazą'
         else:
             message='Pola nie mogą być puste'    
 
@@ -201,12 +204,26 @@ def login():
     return render_template('login.html', message=message)
 
 @app.route('/logout')
-def logout_end():
+def logout():
     db = Connection()
     db.drop_observed_view(session['user'])
     session.pop('user', None)
     return redirect('/')
 
+##################################
+#           STATISTICS           #
+##################################
+@app.route('/stats')
+def stats():
+    db = Connection()
+    all = db.find_overall_stats()
+    artist_type = db.find_type_artist_stats()
+    best_stats = db.find_best_stats()
+    return render_template('stats.html', all=all, artist_type=artist_type, best_stats=best_stats)
+
+##################################
+#          ACCOUNT MENU          #
+##################################
 @app.route('/account', methods=['GET', 'POST'])
 def account():
     db = Connection()
@@ -238,7 +255,8 @@ def account():
         return redirect('/')
 
 ##################################
-
+#            FUNCTIONS           #
+##################################
 def add_comment(table, id_what, id, com):
     db = Connection()
     id_user = db.find_id_user(session['user'])

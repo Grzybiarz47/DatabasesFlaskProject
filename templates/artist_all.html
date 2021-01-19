@@ -26,9 +26,10 @@
     <table>
     {% if roles %}
         <thead>
-        <tr><th colspan="3">Role w filmach i serialach</th></tr>
+        <tr><th colspan="4">Role w filmach i serialach</th></tr>
         <tr>
             <td>Tytuł</td>
+            <td>Rola na planie</td>
             <td>Postać</td>
             <td>Rok produkcji</td>
         </tr>
@@ -37,6 +38,7 @@
         {% for role in roles %}
             <tr>
                 <td>{{role.nazwa}}</td>
+                <td>{{role.rola}}</td>
                 <td>{{role.postac}}</td>
                 <td>{{role.rok_produkcji}}</td>
             </tr>

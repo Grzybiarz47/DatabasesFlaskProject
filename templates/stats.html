@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block description %}
+    <h1>Statystyki bazy danych</h1>
+    <h3>Liczba filmów: {{all.l_fil}}</h3>
+    <h3>Liczba seriali: {{all.l_ser}}</h3>
+    <h3>Liczba gier: {{all.l_gra}}</h3>
+    <h3>Liczba artystów: {{all.l_art}}</h3>
+    <h3>Liczba komentarzy: {{all.l_kom}}</h3><br>
+    <h3>Liczba ocen filmów: {{all.l_ocen_film}}</h3>
+    <h3>Średnia ocena filmów: {{all.sr_ocen_film}}</h3><br>
+    <h3>Liczba ocen seriali: {{all.l_ocen_serial}}</h3>
+    <h3>Średnia ocena seriali: {{all.sr_ocen_serial}}</h3><br>
+    <h3>Liczba ocen gier: {{all.l_ocen_gra}}</h3>
+    <h3>Średnia ocena gier: {{all.sr_ocen_gra}}</h3>
+    <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>
+{% endblock %}
+
+{% block content %}
+    <table>
+        <thead>
+            <tr><th colspan="2">Najwyżej oceniane</th></tr>
+            <tr>
+                <th>Nazwa</th>
+                <th>Średnia ocena</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for best in best_stats %}
+            <tr>
+                <td>{{best.nazwa}}</td>
+                <td>{{best.sr_ocena}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <thead>
+            <tr><th colspan="2">Podsumowanie artystów</th></tr>
+            <tr>
+                <th>Typ artysty</th>
+                <th>Liczba artystów</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for type in artist_type %}
+            <tr>
+                <td>{{type.typ}}</td>
+                <td>{{type.l_typ}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

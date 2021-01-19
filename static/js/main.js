@@ -10,6 +10,9 @@ function toRegister(){
 function toAccount(){
     window.location.href = "/account"
 }
+function toStats(){
+    window.location.href = "/stats"
+}
 function toMainMenu(){
     window.location.href = "/"
 }
