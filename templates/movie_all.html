@@ -51,7 +51,7 @@
         {% if 'user' in session %}
             {% if grade.ocena_uzytkownika != 'Brak oceny' %}
                 <form action="/movie/{{movie.id_film}}" method="POST">    
-                    <textarea id="comments_area" rows="3" cols="50" maxlength ="300"></textarea><br>
+                    <textarea name="comments_area" id="comments_area" rows="3" cols="50" maxlength ="300"></textarea><br>
                     <button name="submit" id="add_comment" value="add_comment">Opublikuj komentarz</button>
                 </form>
             {% else %}

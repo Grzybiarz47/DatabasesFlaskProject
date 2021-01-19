@@ -386,7 +386,6 @@ class Connection:
             print("Error while adding new record to database", error)
 
         print(full_query % (data['user'], data['id'], data['date']))
-        self.create_observed_view(data['user'])
     
     def add_grade(self, data):
         full_query = """
@@ -447,8 +446,6 @@ class Connection:
             print("Error while adding new record to database", error)
 
         print(full_query % (data['id'], data['id_user']))
-        self.create_observed_view(data['user'])
-
 
     def create_observed_view(self, user):
         full_query = """
