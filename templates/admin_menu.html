@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <header>
+        <button name="add_movie" id="add_movie" onclick="toAddMovie()">Dodaj film</button>
+        <button name="add_series" id="add_series" onclick="toAddSeries()">Dodaj serial</button>
+        <button name="add_game" id="add_game" onclick="toAddGame()">Dodaj grę</button>
+        <button name="add_artist" id="add_artist" onclick="toAddArtist()">Dodaj artystę</button>
+        <button name="add_prize" id="add_prize" onclick="toAddPrize()">Dodaj nagrodę</button>
+        <button name="back" id="go_back" onclick="toMainMenu()">Powrót</button>
+    </header>
+    <h1>
+    {% if message %}
+        {{message}}
+    {% endif %}
+    </h1>
+{% endblock %}

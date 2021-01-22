@@ -3,8 +3,10 @@
 {% block description %}
     <h2>Imię: {{artist.imie}}</h2>
     <h2>Nazwisko: {{artist.nazwisko}}</h2>
-    <h2>Data urodzenia: {{artist.data_urodzenia}}</h2>
-    {% if artist.data_smierci != None %}
+    {% if artist.data_urodzenia and artist.data_urodzenia != -1 %}
+        <h2>Data urodzenia: {{artist.data_urodzenia}}</h2>
+    {% endif %}
+    {% if artist.data_smierci and artist.data_smierci != -1 %}
         <h2>Data śmierci: {{artist.data_smierci}}</h2>
     {% endif %}
 {% endblock %}

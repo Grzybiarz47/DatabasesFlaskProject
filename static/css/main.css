@@ -3,11 +3,15 @@ body{
     background-color: coral;
 }
 header{
+    background-color: white;
     border: 2px solid maroon;
     height: 120px;
 }
 h1, h2, h3, p, textarea{
     margin-left: 10px;
+}
+section.placeholder{
+    height: 300px;
 }
 /*div*/
 div.search, div.reglog{
@@ -64,6 +68,9 @@ button{
     margin: 10px;
     padding: 5px;
 }
-input[type=text], [type=email], [type=password], [type=search], [type=submit]{
+input[type=text], [type=email], [type=password], [type=search], [type=submit], [type=number]{
     margin: 10px;
+}
+textarea{
+    margin-top: 10px;
 }

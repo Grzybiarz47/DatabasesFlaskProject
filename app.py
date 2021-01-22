@@ -3,6 +3,7 @@ from loginout import loginout
 from list_data import list_data
 from account import account
 from stats import stats
+from admin import admin
 from connection import Connection
 import os
 
@@ -15,6 +16,7 @@ app.register_blueprint(loginout, url_prefix='')
 app.register_blueprint(list_data, url_prefix='')
 app.register_blueprint(account, url_prefix='')
 app.register_blueprint(stats, url_prefix='')
+app.register_blueprint(admin, url_prefix='/admin')
 
 ENV = 'dev'
 

@@ -2,9 +2,15 @@
 
 {% block description %}
     <h1>{{game.nazwa}}</h1>
-    <h3>Rok produkcji: {{game.rok_produkcji}}</h3>
-    <h3>Studio: {{game.studio}}</h3>
-    <h3>Sprzedaż: {{game.sprzedaz}}</h3>
+    {% if game.rok_produkcji and game.rok_produkcji != -1 %}
+        <h3>Rok produkcji: {{game.rok_produkcji}}</h3>
+    {% endif %}
+    {% if game.studio %}
+        <h3>Studio: {{game.studio}}</h3>
+    {% endif %}
+    {% if game.sprzedaz %}
+        <h3>Box-office: {{game.sprzedaz + '$'}}</h3>
+    {% endif %}
     <h3>Ocena użytkowników: {{grade.ocena}}</h3>
     {% if 'user' in session %}
         <h3>Twoja ocena: {{grade.ocena_uzytkownika}}</h3>

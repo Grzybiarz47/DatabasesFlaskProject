@@ -1,0 +1,25 @@
+{% extends 'admin_menu.html'%}
+
+{% block description %}
+<div id="add_game">
+    <h1>Dodaj grę</h1>
+
+    <form action="/admin/game" method="POST">
+        <fieldset>
+            <legend>Wprowadź dane</legend>
+            <label for="name">Nazwa</label><br>
+            <input type="text" name="name" id="name"><br>
+            <label for="desc">Opis</label><br>
+            <textarea name="desc" id="desc" rows="3" cols="50" maxlength ="300"></textarea><br>
+            <label for="prod">Rok produkcji</label><br>
+            <input type="number" name="prod" id="prod" min="1970" max="2030"><br>
+            <label for="sales">Sprzedaż (mln sztuk)</label><br>
+            <input type="number" name="sales" id="sales" min="0" max="10000"><br>
+            <label for="studio">Studio</label><br>
+            <input type="text" name="studio" id="studio"><br>
+            <input type="submit" value="Dodaj">
+        </fieldset>
+    </form>
+    <section class="placeholder"></section>
+</div>
+{% endblock %}

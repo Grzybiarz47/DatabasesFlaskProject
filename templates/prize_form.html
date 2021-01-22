@@ -1,0 +1,31 @@
+{% extends 'admin_menu.html'%}
+
+{% block description %}
+<div id="add_prize">
+    <h1>Dodaj nagrodę</h1>
+
+    <form action="/admin/prize" method="POST">
+        <fieldset>
+            <legend>Wprowadź dane</legend>
+            <label for="name">Nazwa</label><br>
+            <input type="text" name="name" id="name"><br>
+            <label for="year">Rok przyznania</label><br>
+            <input type="number" name="year" id="year" min="1850" max="2030"><br>
+            <b>Wybierz nagrodzonego (przynajmniej jedno pole musi zostać wypełnione)</b><br>
+            <b>Artysta, film, serial lub gra która została nagrodzona musi być już w bazie!</b><br>
+            <b>Jeśli ich tam jeszcze nie ma dodaj je najpierw</b>
+            <p>Artysta, który otrzymał nagrodę: <p>
+            Imię: <input type="text" name="fname" id="fname"><br>
+            Nazwisko: <input type="text" name="lname" id="lname"><br>
+            <p>Film, który otrzymał nagrodę: </p>
+            <input type="text" name="movie" id="movie"><br>
+            <p>Serial, który otrzymał nagrodę:</p>
+            <input type="text" name="series" id="series"><br>
+            <p>Gra, która otrzymała nagrodę:</p>
+            <input type="text" name="game" id="game"><br>
+            <input type="submit" value="Dodaj">
+        </fieldset>
+    </form>
+    <section class="placeholder"></section>
+</div>
+{% endblock %}

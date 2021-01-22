@@ -2,7 +2,9 @@
 
 {% block description %}
     <h1>{{series.nazwa}}</h1>
-    <h3>Rok produkcji: {{series.rok_produkcji}}</h3>
+    {% if series.rok_produkcji and series.rok_produkcji != -1 %}
+        <h3>Rok produkcji: {{series.rok_produkcji}}</h3>
+    {% endif %}
     <h3>Ocena użytkowników: {{grade.ocena}}</h3>
     {% if 'user' in session %}
         <h3>Twoja ocena: {{grade.ocena_uzytkownika}}</h3>

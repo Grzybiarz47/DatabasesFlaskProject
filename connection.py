@@ -49,8 +49,17 @@ class Connection:
         self.cursor.execute(prefix + proc)
         result = self.make_dict(self.cursor.fetchall())
 
-        print(proc)
+        print(prefix + proc)
         return result
+    
+    def call_insert_procedure(self, proc):
+        prefix = "SELECT "
+        self.cursor.execute(prefix + proc)
+        self.connection.commit()
+        result = self.cursor.fetchall()
+
+        print(prefix + proc)
+        return result[0][0]
 
 ##################################
 
@@ -161,24 +170,17 @@ class Connection:
         INSERT INTO "projekt"."UZYTKOWNIK" VALUES
         ((SELECT projekt.next_id('UZYTKOWNIK', 'id_user')), '%s', '%s', '%s', '%s') 
         """
-        check_query = """
-        SELECT COUNT(*) FROM "projekt"."UZYTKOWNIK" 
-        """
 
         try:
-            self.cursor.execute(check_query)
-            result1 = self.make_dict(self.cursor.fetchall())
-            print(check_query)
+            result1 = self.check_insert('UZYTKOWNIK')
 
             self.cursor.execute(full_query % (data['email'], data['date'], data['pass'], data['login']))
             self.connection.commit()
             print(full_query % (data['email'], data['date'], data['pass'], data['login']))
 
-            self.cursor.execute(check_query)
-            result2 = self.make_dict(self.cursor.fetchall())
-            print(check_query)
+            result2 = self.check_insert('UZYTKOWNIK')
 
-            if result1[0]['count'] == result2[0]['count']:
+            if result1 == result2:
                 return False
 
         except (Exception, Error) as error:
@@ -251,6 +253,140 @@ class Connection:
             print("Error while adding record in database", error)
 
         print(full_query % (data['id_what'], data['id'], data['com']))
+    
+    def add_movie(self, data):
+        full_query = """
+        INSERT INTO "projekt"."FILM" (id_film, nazwa, opis, rok_produkcji, box_office, studio) VALUES
+        (projekt.next_id('FILM', 'id_film'), '%s', '%s', %s, '%s', '%s')
+        """
+
+        try:
+            result1 = self.check_insert('FILM')
+
+            self.cursor.execute(full_query % (data['name'], data['desc'], data['prod'], data['box_off'], data['studio']))
+            self.connection.commit()
+            print(full_query % (data['name'], data['desc'], data['prod'], data['box_off'], data['studio']))
+        
+            result2 = self.check_insert('FILM')
+
+            if result1 == result2:
+                return False
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+        
+        return True
+    
+    def add_game(self, data):
+        full_query = """
+        INSERT INTO "projekt"."GRA" (id_gra, nazwa, opis, rok_produkcji, sprzedaz, studio) VALUES
+        (projekt.next_id('GRA', 'id_gra'), '%s', '%s', %s, '%s', '%s')
+        """
+
+        try:
+            result1 = self.check_insert('GRA')
+
+            self.cursor.execute(full_query % (data['name'], data['desc'], data['prod'], data['sales'], data['studio']))
+            self.connection.commit()
+            print(full_query % (data['name'], data['desc'], data['prod'], data['sales'], data['studio']))
+        
+            result2 = self.check_insert('GRA')
+
+            if result1 == result2:
+                return False
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+        
+        return True
+    
+    def add_series(self, data):
+        full_query = """
+        INSERT INTO "projekt"."SERIAL" (id_serial, nazwa, opis, rok_produkcji) VALUES
+        (%s, '%s', '%s', %s)
+        """
+        id_query = """ SELECT * FROM projekt.next_id('SERIAL', 'id_serial') """
+
+        try:
+            self.cursor.execute(id_query)
+            id_series = self.cursor.fetchall()[0]['next_id']
+            self.cursor.execute(full_query % (id_series, data['name'], data['desc'], data['prod']))
+            self.connection.commit()
+            print(full_query % (id_series, data['name'], data['desc'], data['prod']))
+            return id_series
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+
+        return -1
+
+    def add_season(self, data):
+        full_query = """
+        INSERT INTO "projekt"."SEZON" (id_sezon, id_serial, rok_produkcji) VALUES
+        (%s, %s, %s)
+        """
+        id_query = """ SELECT * FROM projekt.next_id('SEZON', 'id_sezon') """
+
+        try:
+            self.cursor.execute(id_query)
+            id_season = (self.cursor.fetchall())[0]['next_id']
+            self.cursor.execute(full_query % (id_season, data['id_series'], data['prod']))
+            self.connection.commit()
+            print(full_query % (id_season, data['id_series'], data['prod']))
+            return id_season
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+
+        return -1
+
+    def add_chapter(self, data):
+        full_query = """
+        INSERT INTO "projekt"."ODCINEK" (id_sezon, nazwa) VALUES
+        (%s, '%s')
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['id_season'], data['name']))
+            self.connection.commit()
+            print(full_query % (data['id_season'], data['name']))
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+
+    def add_type(self, data):
+        full_query = """
+        INSERT INTO "projekt"."RODZAJ_ARTYSTY" (id_artysta, typ) VALUES
+        (%s, '%s')
+        """
+
+        try:
+            self.cursor.execute(full_query % (data['id_artist'], data['type']))
+            self.connection.commit()
+            print(full_query % (data['id_artist'], data['type']))
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+    
+    def add_artist(self, data):
+        full_query = """
+        INSERT INTO "projekt"."ARTYSTA" (id_artysta, imie, nazwisko, data_urodzenia, data_smierci) VALUES
+        (%s, '%s', '%s', %s, %s)
+        """
+        id_query = """ SELECT * FROM projekt.next_id('ARTYSTA', 'id_artysta') """
+
+        try:
+            self.cursor.execute(id_query)
+            id_artist = (self.cursor.fetchall())[0]['next_id']
+            self.cursor.execute(full_query % (id_artist, data['fname'], data['lname'], data['birth'], data['death']))
+            self.connection.commit()
+            print(full_query % (id_artist, data['fname'], data['lname'], data['birth'], data['death']))
+            return id_artist
+        
+        except (Exception, Error) as error:
+            print("Error while adding record in database", error)
+        
+        return -1
 
 ##################################
 
@@ -285,7 +421,21 @@ class Connection:
             print("Error while adding new record to database", error)
 
         print(full_query % (data['id'], data['id_user']))
-    
+
+##################################
+
+    def check_insert(self, table):
+        check_query = """
+        SELECT COUNT(*) as val FROM "projekt"."%s" 
+        """
+
+        self.cursor.execute(check_query % (table))
+        result = self.make_dict(self.cursor.fetchall())
+        print(check_query % (table))
+        return result[0]['val']
+
+
+
 
 
 

@@ -13,12 +13,13 @@
         <div class="login">
             <button name="logout" id="main_page" onclick="toMainMenu()">Strona główna</button>
             {% if 'user' in session %}
-                <button name="logout" id="logout_user" onclick="toLogout()">Wyloguj</button>
                 <button name="account" id="account_user" onclick="toAccount()">Twoje konto</button>
                 <button name="stats" id="stats_page" onclick="toStats()">Statystyki</button>
+                <button name="admin" id="admin_page" onclick="toAdminMenu()">Edycja</button>
+                <button name="logout" id="logout_user" style="background-color:red;" onclick="toLogout()">Wyloguj</button>
             {% else %}
-                <button name="login" id="login_user" onclick="toLogin()">Logowanie</button>
-                <button name="register" id="register_user" onclick="toRegister()">Rejestracja</button>
+                <button name="login" id="login_user" style="background-color:green;" onclick="toLogin()">Logowanie</button>
+                <button name="register" id="register_user" style="background-color:green;" onclick="toRegister()">Rejestracja</button>
             {% endif %}
         </div>
     </header>

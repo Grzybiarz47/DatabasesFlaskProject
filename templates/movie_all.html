@@ -2,9 +2,15 @@
 
 {% block description %}
     <h1>{{movie.nazwa}}</h1>
-    <h3>Rok produkcji: {{movie.rok_produkcji}}</h3>
-    <h3>Studio: {{movie.studio}}</h3>
-    <h3>Box-office: {{movie.box_office + "$"}}</h3>
+    {% if movie.rok_produkcji and movie.rok_produkcji != -1 %}
+        <h3>Rok produkcji: {{movie.rok_produkcji}}</h3>
+    {% endif %}
+    {% if movie.studio %}
+        <h3>Studio: {{movie.studio}}</h3>
+    {% endif %}
+    {% if movie.box_office %}
+        <h3>Box-office: {{movie.box_office + '$'}}</h3>
+    {% endif %}
     <h3>Ocena użytkowników: {{grade.ocena}}</h3>
     {% if 'user' in session %}
         <h3>Twoja ocena: {{grade.ocena_uzytkownika}}</h3>

@@ -3,6 +3,7 @@
 {% block description %}
     <h1>Sezon serialu: {{season.nazwa}}</h1>
     <h3>Rok produkcji: {{season.rok_produkcji}}</h3>
+    <button name="back" id="go_back" onclick="toSeries({{id_serial}})">Powrót</button>
 {% endblock %}
 {% block content %}
     <table>

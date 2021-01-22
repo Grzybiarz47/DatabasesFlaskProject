@@ -1,0 +1,25 @@
+{% extends 'admin_menu.html'%}
+
+{% block description %}
+<div id="add_movie">
+    <h1>Dodaj film</h1>
+
+    <form action="/admin/movie" method="POST">
+        <fieldset>
+            <legend>Wprowadź dane</legend>
+            <label for="name">Nazwa</label><br>
+            <input type="text" name="name" id="name"><br>
+            <label for="desc">Opis</label><br>
+            <textarea name="desc" id="desc" rows="3" cols="50" maxlength ="300"></textarea><br>
+            <label for="prod">Rok produkcji</label><br>
+            <input type="number" name="prod" id="prod" min="1850" max="2030"><br>
+            <label for="box_off">Box office</label><br>
+            <input type="number" name="box_off" id="box_off" min="0" max="10000000000"><br>
+            <label for="studio">Studio</label><br>
+            <input type="text" name="studio" id="studio"><br>
+            <input type="submit" value="Dodaj">
+        </fieldset>
+    </form>
+    <section class="placeholder"></section>
+</div>
+{% endblock %}

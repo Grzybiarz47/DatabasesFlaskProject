@@ -1,0 +1,25 @@
+{% extends 'admin_menu.html'%}
+
+{% block description %}
+<div id="add_series">
+    <h1>Dodaj serial</h1>
+    <form action="/admin/series" method="POST">
+        <fieldset>
+            <legend>Wprowadź dane</legend>
+            <label for="name">Nazwa</label><br>
+            <input type="text" name="name" id="name"><br>
+            <label for="desc">Opis</label><br>
+            <textarea name="desc" id="desc" rows="3" cols="50" maxlength ="300"></textarea><br>
+            <label for="prod">Rok produkcji</label><br>
+            <input type="number" name="prod" id="prod" min="1850" max="2030"><br>
+            <label for="seasons">Liczba sezonów</label><br>
+            <input type="number" name="seasons" id="seasons" min="1" max="100" onchange="addSeasons()"><br>
+            <div id="list_seasons" name="list_seasons"></div>
+            <input type="submit" value="Dodaj">
+        </fieldset>
+    </form>
+    <section class="placeholder"></section>
+</div>
+
+<script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+{% endblock %}

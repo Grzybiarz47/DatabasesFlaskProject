@@ -51,7 +51,7 @@ def season(id_serial, id_sezon):
     db = Connection()
     chapters = db.call_procedure("projekt.wyszukaj_odcinki(%s)" % (id_sezon))
     season = db.call_procedure("projekt.wyszukaj_info_sezon(%s, %s)" % (id_serial, id_sezon))[0]
-    return render_template('season_all.html', season=season, chapters=chapters)
+    return render_template('season_all.html', season=season, chapters=chapters, id_serial=id_serial)
 
 @list_data.route('/movie/<int:id>', methods=['GET', 'POST'])
 def movie(id):

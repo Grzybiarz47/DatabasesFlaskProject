@@ -1,20 +1,26 @@
-<table>
-{% if prizes %}
-    <thead>
-    <tr><th colspan="2">Nagroda</th></tr>
-    <tr>
-        <th>Nazwa</th>
-        <th>Rok przyznania</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for prize in prizes %}
+{% if prizes == [] %}
+    <h2>Nie dodano jeszcze żadnych nagród</h2>
+{% elif prizes %}
+    <table>
+        <thead>
+        <tr><th colspan="2">Nagroda</th></tr>
         <tr>
-            <td>{{prize.nazwa}}</td>
-            <td>{{prize.rok_przyznania}}</td>
+            <th>Nazwa</th>
+            <th>Rok przyznania</th>
         </tr>
-    {% endfor %}
-    </tbody>            
+        </thead>
+        <tbody>
+            {% for prize in prizes %}
+                <tr>
+                    <td>{{prize.nazwa}}</td>
+                    <td>
+                    {% if prize.rok_przyznania and prize.rok_przyznania != -1 %}
+                        {{prize.rok_przyznania}}
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>            
+    </table>
 {% endif %}
-</table>
 <p></p>
