@@ -37,7 +37,7 @@ def after_request(response):
 def index():
     if request.method == 'POST':
         db = Connection()
-        query = '%' + request.form['mainFindForm'].upper() + '%'
+        query = '%' + request.form['mainFindForm'].strip().upper() + '%'
         series = db.call_procedure("projekt.wyszukaj_seriale('%s')" % (query))
         movies = db.call_procedure("projekt.wyszukaj_filmy('%s')" % (query))
         games = db.call_procedure("projekt.wyszukaj_gry('%s')" % (query))

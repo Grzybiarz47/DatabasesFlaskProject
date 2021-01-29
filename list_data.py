@@ -13,7 +13,8 @@ def series(id):
     ans = db.find_info(table='SERIAL', id_what='id_serial', id=id)
     grade = db.find_grade(table='SERIAL', id_what='id_serial', id=id)
     if 'user' in session:
-        grade['ocena_uzytkownika'] = db.find_user_grade(table='SERIAL', id_what='id_serial', id=id, id_user=db.find_id_user(session['user']))['ocena']
+        id_user = db.call_procedure("projekt.id_użytkownika('%s')" % (session['user']))[0]['id_użytkownika']
+        grade['ocena_uzytkownika'] = db.find_user_grade(table='SERIAL', id_what='id_serial', id=id, id_user=id_user)['ocena']
 
     if request.method == 'POST':
         task = request.form['submit']
@@ -59,7 +60,8 @@ def movie(id):
     ans = db.find_info(table='FILM', id_what='id_film', id=id)
     grade = db.find_grade(table='FILM', id_what='id_film', id=id)
     if 'user' in session:
-        grade['ocena_uzytkownika'] = db.find_user_grade(table='FILM', id_what='id_film', id=id, id_user=db.find_id_user(session['user']))['ocena']
+        id_user = db.call_procedure("projekt.id_użytkownika('%s')" % (session['user']))[0]['id_użytkownika']
+        grade['ocena_uzytkownika'] = db.find_user_grade(table='FILM', id_what='id_film', id=id, id_user=id_user)['ocena']
 
     if request.method == 'POST':
         task = request.form['submit']
@@ -94,7 +96,8 @@ def game(id):
     ans = db.find_info(table='GRA', id_what='id_gra', id=id)
     grade = db.find_grade(table='GRA', id_what='id_gra', id=id)
     if 'user' in session:
-        grade['ocena_uzytkownika'] = db.find_user_grade(table='GRA', id_what='id_gra', id=id, id_user=db.find_id_user(session['user']))['ocena']
+        id_user = db.call_procedure("projekt.id_użytkownika('%s')" % (session['user']))[0]['id_użytkownika']
+        grade['ocena_uzytkownika'] = db.find_user_grade(table='GRA', id_what='id_gra', id=id, id_user=id_user)['ocena']
 
     if request.method == 'POST':
         task = request.form['submit']
@@ -124,7 +127,6 @@ def artist(id):
     db = Connection()
     ans = db.find_info(table='ARTYSTA', id_what='id_artysta', id=id)
     prizes = db.find_prizes(id_what='id_artysta', id=id)
-    #artist_type = db.find_artist_type(id)
     artist_type = db.call_procedure("projekt.wyszukaj_rodzaj_artystów(%s)" % (id))
     roles = db.call_procedure("projekt.wyszukaj_role(%s)" % (id))
     return render_template('artist_all.html', artist=ans, prizes=prizes, artist_type=artist_type, roles=roles)

@@ -16,26 +16,22 @@ def show_account():
             if 'mainFindUserForm' in request.form:
                 log = request.form['mainFindUserForm']
                 searched_users = db.call_procedure("projekt.wyszukaj_użytkowników('%s', '%s')" % (session['user'], '%' + log + '%'))
-                # observed = db.find_observed(session['user'])
                 observed = db.call_procedure("projekt.wyszukaj_obserwowanych('%s')" % (session['user']))
                 return render_template('account.html', user_data=user_data, observed=observed, searched_users=searched_users)
 
             elif 'add' in request.form:
                 id_obs = request.form['add']
                 db.add_to_observed({'id': id_obs, 'user': session['user'], 'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-                # observed = db.find_observed(session['user'])
                 observed = db.call_procedure("projekt.wyszukaj_obserwowanych('%s')" % (session['user']))
                 return render_template('account.html', user_data=user_data, observed=observed)
 
             elif 'delete' in request.form:
                 id_obs = request.form['delete']
-                db.delete_from_observed({'id': id_obs, 'id_user': db.find_id_user(session['user']), 'user': session['user']})
-                # observed = db.find_observed(session['user'])
+                db.delete_from_observed({'id': id_obs, 'id_user': db.call_procedure("projekt.id_użytkownika('%s')" % (session['user']))[0]['id_użytkownika'], 'user': session['user']})
                 observed = db.call_procedure("projekt.wyszukaj_obserwowanych('%s')" % (session['user']))
                 return render_template('account.html', user_data=user_data, observed=observed)
 
         else:
-            # observed = db.find_observed(session['user'])
             observed = db.call_procedure("projekt.wyszukaj_obserwowanych('%s')" % (session['user']))
             return render_template('account.html', user_data=user_data, observed=observed)
     else:
