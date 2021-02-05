@@ -18,7 +18,7 @@ app.register_blueprint(account, url_prefix='')
 app.register_blueprint(stats, url_prefix='')
 app.register_blueprint(admin, url_prefix='/admin')
 
-ENV = 'dev'
+ENV = '1.0'
 
 if ENV == 'dev':
     app.debug = True
